@@ -29,6 +29,10 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # Skip on forks: the schedule trigger is inherited by every fork, but
+    # scheduled-run failures are attributed to (and emailed to) the upstream
+    # workflow author. Gating the job keeps forks from flooding that inbox.
+    if: github.repository == 'qazbnm456/awesome-web-security'
     steps:
       - uses: actions/checkout@v4
 
