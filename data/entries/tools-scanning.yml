@@ -130,3 +130,19 @@ entries:
     fingerprint: null
     status: active
     raw_rest: "Open-source WAF bypass and security-testing toolkit with 6,300+ payloads across OWASP categories, AI-assisted evasion engine, 27-check reconnaissance pipeline, and OWASP hardening audit, by [@dalisecurity](https://github.com/dalisecurity)."
+  - id: tools-scanning-securitool
+    url: "https://securitool.js.org/"
+    title: SecuriTool
+    author:
+      name: "@ReplikanteK"
+      url: "https://github.com/ReplikanteK"
+    category: tools-scanning
+    type: tool
+    languages: [en, zh, jp]
+    difficulty: intro
+    date_added: "2026-05-28"
+    archive_url: null
+    last_checked: null
+    fingerprint: null
+    status: active
+    raw_rest: "Free online collection of 29 client-side web security tools: web auditor, JWT attacker/decoder, CVE search, CSP evaluator, email security checker (SPF/DKIM/DMARC), subdomain scanner, and more. 100% client-side, privacy-first, open source by [@ReplikanteK](https://github.com/ReplikanteK)."

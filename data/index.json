@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-05-14T07:01:27Z",
+  "generated_at": "2026-05-28T07:03:52Z",
   "categories": [
     {
       "key": "digests",
@@ -8192,6 +8192,27 @@
       ],
       "difficulty": "intermediate",
       "date_added": "2026-05-12",
+      "archive_url": null,
+      "last_checked": null,
+      "status": "active"
+    },
+    {
+      "id": "tools-scanning-securitool",
+      "url": "https://securitool.js.org/",
+      "title": "SecuriTool",
+      "author": {
+        "name": "@ReplikanteK",
+        "url": "https://github.com/ReplikanteK"
+      },
+      "category": "tools-scanning",
+      "type": "tool",
+      "languages": [
+        "en",
+        "zh",
+        "jp"
+      ],
+      "difficulty": "intro",
+      "date_added": "2026-05-28",
       "archive_url": null,
       "last_checked": null,
       "status": "active"
