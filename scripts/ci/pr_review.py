@@ -18,9 +18,11 @@ Environment:
 """
 from __future__ import annotations
 
+import ipaddress
 import json
 import os
 import re
+import socket
 import subprocess
 import sys
 import urllib.error
@@ -133,6 +135,55 @@ def added_entries_in_pr() -> list[dict]:
 # Deterministic checks
 # ---------------------------------------------------------------------------
 
+def _host_is_non_public(host: str) -> bool:
+    """True if `host` resolves to any non-public address.
+
+    The entry URL is attacker-controlled (it comes straight from the PR's
+    YAML), and check_reachability fetches it from inside CI. Without this
+    guard the bot is an SSRF primitive: a PR could point `url` at the cloud
+    metadata endpoint (169.254.169.254) or an internal service. We resolve
+    every address the host maps to and reject loopback / private / link-local
+    / reserved / multicast / unspecified ranges.
+
+    Note: this is a hostname-level check and does not fully close DNS
+    rebinding (a host that resolves public here but private at connect time).
+    That residual is acceptable for a link-checker whose only output is a
+    0-3 score and a short status string — no response body is ever returned.
+    """
+    if not host:
+        return True
+    try:
+        infos = socket.getaddrinfo(host, None)
+    except socket.gaierror:
+        # Unresolvable: let the real request fail normally rather than
+        # mislabel it "non-public".
+        return False
+    for info in infos:
+        try:
+            addr = ipaddress.ip_address(info[4][0])
+        except ValueError:
+            return True
+        if (addr.is_private or addr.is_loopback or addr.is_link_local
+                or addr.is_reserved or addr.is_multicast
+                or addr.is_unspecified):
+            return True
+    return False
+
+
+class _BlockInternalRedirect(urllib.request.HTTPRedirectHandler):
+    """Re-validate the target host on every redirect hop. urllib follows
+    redirects automatically, so a public URL that 30x-es to an internal one
+    would otherwise sail past the pre-request check."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if _host_is_non_public(urlparse(newurl).hostname or ""):
+            raise urllib.error.URLError("redirect to non-public host blocked")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+_SAFE_OPENER = urllib.request.build_opener(_BlockInternalRedirect())
+
+
 def check_reachability(url: str) -> tuple[int, str]:
     """Return (score, reason)."""
     if not url:
@@ -140,17 +191,19 @@ def check_reachability(url: str) -> tuple[int, str]:
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https"):
         return 0, f"invalid scheme `{parsed.scheme}`"
+    if _host_is_non_public(parsed.hostname or ""):
+        return 0, "host resolves to a non-public address"
     try:
         req = urllib.request.Request(url, method="HEAD",
                                      headers={"User-Agent": "Mozilla/5.0 awesome-web-security-bot"})
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with _SAFE_OPENER.open(req, timeout=15) as resp:
             status = resp.status
             final = resp.url
     except urllib.error.HTTPError as exc:
         # try GET in case HEAD blocked
         if exc.code in (403, 405):
             try:
-                with urllib.request.urlopen(urllib.request.Request(
+                with _SAFE_OPENER.open(urllib.request.Request(
                         url, headers={"User-Agent": "Mozilla/5.0 awesome-web-security-bot"}
                 ), timeout=15) as resp:
                     status = resp.status
