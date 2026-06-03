@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-02T08:03:39Z",
+  "generated_at": "2026-06-03T16:11:57Z",
   "categories": [
     {
       "key": "digests",
@@ -7982,7 +7982,7 @@
       ],
       "difficulty": "intro",
       "date_added": "2026-05-14",
-      "archive_url": null,
+      "archive_url": "https://web.archive.org/web/20260603160905/https://www.crowdsec.net/",
       "last_checked": null,
       "status": "active"
     },
@@ -8213,7 +8213,7 @@
       ],
       "difficulty": "intro",
       "date_added": "2026-05-28",
-      "archive_url": null,
+      "archive_url": "https://web.archive.org/web/20260531111954/https://securitool.js.org/",
       "last_checked": null,
       "status": "active"
     },

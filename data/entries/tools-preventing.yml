@@ -189,7 +189,7 @@ entries:
     languages: [en, zh, jp]
     difficulty: intro
     date_added: "2026-05-14"
-    archive_url: null
+    archive_url: "https://web.archive.org/web/20260603160905/https://www.crowdsec.net/"
     last_checked: null
     fingerprint: null
     status: active
