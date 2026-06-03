@@ -71,9 +71,20 @@ jobs:
             -R "$REPO" 2>/dev/null || true
 
           # Find an existing open rolling issue (label: health/link-check).
-          existing=$(gh issue list -R "$REPO" \
-            --label health/link-check --state open \
-            --json number,title -q '.[0].number' || true)
+          # Distinguish "gh succeeded with 0 results" (first run — create) from
+          # "gh itself failed" (transient hiccup — bail rather than create a
+          # duplicate). The previous form (`|| true`) collapsed both cases,
+          # which let one bad cron on 2026-05-26 open #181 alongside #176.
+          if ! existing_json=$(gh issue list -R "$REPO" \
+              --label health/link-check --state open \
+              --json number 2>&1); then
+            echo "::error::gh issue list failed: ${existing_json}"
+            echo "Aborting to avoid creating a duplicate rolling issue."
+            echo "The next cron run will retry; lychee output is in the"
+            echo "previous step's log."
+            exit 1
+          fi
+          existing=$(echo "$existing_json" | jq -r '.[0].number // empty')
 
           # Prepend metadata (timestamp + run link) to the report. The
           # resulting file is the canonical "current snapshot" that
