@@ -71,20 +71,38 @@ jobs:
             -R "$REPO" 2>/dev/null || true
 
           # Find an existing open rolling issue (label: health/link-check).
-          # Distinguish "gh succeeded with 0 results" (first run — create) from
-          # "gh itself failed" (transient hiccup — bail rather than create a
-          # duplicate). The previous form (`|| true`) collapsed both cases,
-          # which let one bad cron on 2026-05-26 open #181 alongside #176.
-          if ! existing_json=$(gh issue list -R "$REPO" \
-              --label health/link-check --state open \
-              --json number 2>&1); then
-            echo "::error::gh issue list failed: ${existing_json}"
+          # Use the REST issues endpoint, NOT `gh issue list`. The latter
+          # goes through GitHub's search index, which is not strongly
+          # consistent — it can return an empty result for several minutes
+          # after recent issue ops even when a matching issue exists. That
+          # already burned us twice:
+          #   2026-05-26 cron created #181 alongside #176
+          #   2026-06-03 push run  created #185 alongside #181
+          # An empty result also gets a single retry after a short pause,
+          # so a brief data lag does not get mistaken for "first run".
+          fetch_existing() {
+            gh api "repos/${REPO}/issues?labels=health/link-check&state=open&per_page=10" 2>&1
+          }
+
+          if ! existing_json="$(fetch_existing)"; then
+            echo "::error::gh api failed: ${existing_json}"
             echo "Aborting to avoid creating a duplicate rolling issue."
-            echo "The next cron run will retry; lychee output is in the"
-            echo "previous step's log."
             exit 1
           fi
-          existing=$(echo "$existing_json" | jq -r '.[0].number // empty')
+          # REST /issues returns issues + PRs together; filter PRs out.
+          existing=$(echo "$existing_json" \
+            | jq -r '[.[] | select(.pull_request == null) | .number] | .[0] // empty')
+
+          if [ -z "$existing" ]; then
+            echo "no rolling issue on first lookup; retrying after 8s in case of data lag..."
+            sleep 8
+            if ! existing_json="$(fetch_existing)"; then
+              echo "::error::gh api failed on retry: ${existing_json}"
+              exit 1
+            fi
+            existing=$(echo "$existing_json" \
+              | jq -r '[.[] | select(.pull_request == null) | .number] | .[0] // empty')
+          fi
 
           # Prepend metadata (timestamp + run link) to the report. The
           # resulting file is the canonical "current snapshot" that
