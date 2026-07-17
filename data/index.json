@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-07-09T10:58:41Z",
+  "generated_at": "2026-07-17T02:00:00Z",
   "categories": [
     {
       "key": "digests",
@@ -7529,7 +7529,7 @@
       ],
       "difficulty": "intro",
       "date_added": "2026-07-09",
-      "archive_url": null,
+      "archive_url": "https://web.archive.org/web/20260717015821/https://osintprojects.com/",
       "last_checked": null,
       "status": "active"
     },
