@@ -1,6 +1,6 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-07-18T15:03:44Z",
+  "generated_at": "2026-07-18T15:08:54Z",
   "categories": [
     {
       "key": "digests",
@@ -7769,7 +7769,7 @@
       ],
       "difficulty": "intermediate",
       "date_added": "2026-07-09",
-      "archive_url": null,
+      "archive_url": "https://web.archive.org/web/20260718150631/https://github.com/ASCIT31/Dark-Moon",
       "last_checked": null,
       "status": "active"
     },
