@@ -642,3 +642,19 @@ entries:
     fingerprint: null
     status: active
     raw_rest: "Comprehensive Hack The Box writeup collection covering 75+ web challenges including XSS, SQLi, SSTI, SSRF, and deserialization, by [@momenbasel](https://github.com/momenbasel)."
+  - id: miscellaneous-dns-and-mail-security-methodology
+    url: "https://admintoolkit.io/guides/dns-mail-security-methodology/"
+    title: "From DNS Evidence to a Finding: DNS and Mail Security Methodology"
+    author:
+      name: AdminToolkit
+      url: "https://admintoolkit.io/"
+    category: miscellaneous
+    type: article
+    languages: [en]
+    difficulty: intermediate
+    date_added: "2026-09-14"
+    archive_url: null
+    last_checked: null
+    fingerprint: null
+    status: active
+    raw_rest: "How DNSSEC, DANE, SPF/DKIM/DMARC and SMTP transport evidence becomes a finding, with the decision logic for each, the `dig` invocations to reproduce it independently, and the false positives to expect."
