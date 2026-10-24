@@ -146,3 +146,20 @@ entries:
     fingerprint: null
     status: active
     raw_rest: "Free online collection of 29 client-side web security tools: web auditor, JWT attacker/decoder, CVE search, CSP evaluator, email security checker (SPF/DKIM/DMARC), subdomain scanner, and more. 100% client-side, privacy-first, open source by [@ReplikanteK](https://github.com/ReplikanteK)."
+
+  - id: tools-scanning-website-vulnerability-scanner
+    url: "https://github.com/RanaKhan77/Website-Vulnerability-Scanner"
+    title: Website Vulnerability Scanner
+    author:
+      name: "@RanaKhan77"
+      url: "https://github.com/RanaKhan77"
+    category: tools-scanning
+    type: tool
+    languages: [en]
+    difficulty: intermediate
+    date_added: "2026-10-20"
+    archive_url: null
+    last_checked: null
+    fingerprint: null
+    status: active
+    raw_rest: "Self-hosted (Docker) web vulnerability scanner with 200 deterministic modules covering the OWASP Top 10, WordPress/CMS fingerprinting, TLS/DNS/email misconfigurations, exposed services and AI/LLM attack surfaces, with PDF reporting and continuous monitoring, by [@RanaKhan77](https://github.com/RanaKhan77)."
